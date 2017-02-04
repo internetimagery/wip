@@ -6,6 +6,7 @@ wip
 
 **Docs:**
 
+* underscore.string https://epeli.github.io/underscore.string/#api
 * async https://caolan.github.io/async/
 * ini https://github.com/npm/ini/blob/master/README.md
 * fs-extra https://github.com/jprichardson/node-fs-extra/blob/master/README.md
