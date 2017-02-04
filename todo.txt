@@ -1,0 +1,36 @@
+Photo organization tool:
+
+Appearance: http://photonkit.com/
+GUI: https://facebook.github.io/react/
+Server: http://sailsjs.com/
+Application: http://electron.atom.io/
+
+file system: npm install fs-extra
+Processing: npm install ffmpeg-static (maybe, or manually add it in)
+
+
+Have a config file that gets data read from. Have a default version that gets copied across if the config doesn't exist.
+Include the path format for it. ie: {YYYY}/{yy}-{mm}-{dd} {EVENT}/{yy}-{mm}-{dd} {EVENT}_{NUM}{TAGS}{EXT}
+
+using underscore.string?
+
+detect if cameras are plugged in. perhaps looking for dcim?
+
+face detection for tagging. OpenCV? Something more javascripty?
+
+make a database that logs dhash (or some other hash), file path, date added, date taken, event name, thumbnail path, anything else?
+Use dhash to check for existing duplicates.
+
+Copy files to a staging area to organize and tag them, then insert into file structure as two step process.
+
+use ffmpeg to make little thumbnails for all pictures
+
+use rclone to run backups automatically
+
+have cleanup tasks to do things like run through the thumbnails and delete thigns taht don't exist in DB. Track when last run. Have setting in config telling how
+
+often to run. Run on startup.
+
+Another cleanup task. Check files are still in folders.
+
+use async library to limit number of ffmpeg calls at once. Throw the number of processes in the config.
