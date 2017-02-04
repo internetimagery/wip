@@ -4,12 +4,12 @@ Appearance: http://photonkit.com/
 GUI: https://facebook.github.io/react/
 Server: http://sailsjs.com/
 Application: http://electron.atom.io/
-database: https://pouchdb.com/adapters.html#pouchdb_in_node_js
 
 file system: npm install fs-extra
 Processing: npm install ffmpeg-static (maybe, or manually add it in)
 Do we want ffprobe?
 
+need ini for reading ffmpeg metadata
 
 Have a config file that gets data read from. Have a default version that gets copied across if the config doesn't exist.
 Include the path format for it. ie: {YYYY}/{yy}-{mm}-{dd} {EVENT}/{yy}-{mm}-{dd} {EVENT}_{NUM}{TAGS}{EXT}
