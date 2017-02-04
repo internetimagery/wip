@@ -16,3 +16,16 @@ describe "format(<string>, <object>)", ->
   it "Should skip backslashed brackets (escaped)", ->
     expect utility.format "\{one} {TAG} three", {tag: "two"}
     .to.be "{one} two three"
+  it "Should fail if given incorret parameters", ->
+    expect utility.format ["one"], "two"
+    .to.throw()
+  it "Should fail if captured tags are not in <object>", ->
+    expect utility.format "{GONE}", {}
+    .to.throw()
+  it "Should fail if tag names are not valid.", ->
+    expect utility.format "{no spaces}", {no:"not",spaces:"here"}
+    .to.throw()
+    expect utility.format "{letters(only)}", {letters:"not",only:"here"}
+    .to.throw()
+    expect utility.format "{underscore_ok}", {underscore_ok:"good"}
+    .to.be "good"
