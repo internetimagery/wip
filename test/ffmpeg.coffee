@@ -1,5 +1,10 @@
 # FFmpeg stuff
 expect = require 'expect.js'
+temp = require 'temp'
+ffmpeg = require '../src/back/ffmpeg'
+
+# Automatically delete temporary files
+temp.track()
 
 describe "get_metadata(<file>)", ->
   it "Should retrieve an object of key/value pairs for metadata", ->
