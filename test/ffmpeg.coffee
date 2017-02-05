@@ -5,7 +5,7 @@ ffmpeg = require '../src/back/ffmpeg'
 path = require 'path'
 
 # Automatically delete temporary files
-# temp.track()
+temp.track()
 
 TEST_DATA = path.join __dirname, "test_data"
 TEMP_DIR = temp.mkdirSync {dir: TEST_DATA}
