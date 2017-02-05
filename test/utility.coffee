@@ -1,6 +1,6 @@
 # Testing the utility functions
 expect = require 'expect.js'
-utility = require "../src/js/utility"
+utility = require "../src/back/utility"
 
 
 describe "format(<string>, <object>)", ->
@@ -27,13 +27,13 @@ describe "format(<string>, <object>)", ->
     expect utility.format "{underscore_ok}", {underscore_ok:"good"}
     .to.be "good"
 
-describe "compare_image_hash(<hash1>, <hash2>)", ->
-  it "Should see two of the same image as the same.", ->
-    expect compare_image_hash hash1, hash2
-    .to.be true
-  it "Should see two of the same image different sizes as the same.", ->
-    expect compare_image_hash hash1, hash2
-    .to.be true
-  it "Should see two different images as the different.", ->
-    expect compare_image_hash hash1, hash2
-    .to.be false
+# describe "compare_image_hash(<hash1>, <hash2>)", ->
+#   it "Should see two of the same image as the same.", ->
+#     expect compare_image_hash hash1, hash2
+#     .to.be true
+#   it "Should see two of the same image different sizes as the same.", ->
+#     expect compare_image_hash hash1, hash2
+#     .to.be true
+#   it "Should see two different images as the different.", ->
+#     expect compare_image_hash hash1, hash2
+#     .to.be false
