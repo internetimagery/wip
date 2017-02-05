@@ -4,21 +4,17 @@ temp = require 'temp'
 ffmpeg = require '../src/back/ffmpeg'
 path = require 'path'
 
-p = "D:/Pictures/Random Drawings/DSC_05712.jpg"
-
 # Automatically delete temporary files
 temp.track()
 
-TEST_IMG = path.join __dirname, "test_images"
-TEMP_DIR = temp.mkdirSync {dir: TEST_IMG}
+TEST_DATA = path.join __dirname, "test_data"
+TEMP_DIR = temp.mkdirSync {dir: TEST_DATA}
 
-# Some test images
-# HAS_EXIF = path.join __dirname, "test_images", "has_exif.jpg"
-METADATA = path.join TEST_IMG, "metadata.mp4"
 
 describe "get_metadata(<file>, <callback>)", ->
+  VIDEO = path.join TEST_DATA, "video.mp4"
   it "Should retrieve an object of key/value pairs for metadata", (done)->
-    ffmpeg.get_metadata METADATA, (err, data)->
+    ffmpeg.get_metadata VIDEO, (err, data)->
       return done err if err
       try
         expect data
@@ -27,7 +23,8 @@ describe "get_metadata(<file>, <callback>)", ->
       finally
         done err
 
-describe "get_thumb(<file>, <width>, <height>)", ->
+describe "get_thumb(<src>, <dest>, <width>, <height>, <callback>)", ->
+  VIDEO = path.join TEST_DATA, "video.mp4"
   it "Should get a thumbnail from an image", ->
     expect "thumb"
   it "Should get a thumbnail from a video", ->
