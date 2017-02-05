@@ -18,6 +18,8 @@ pouchDB | https://pouchdb.com/adapters.html#pouchdb_in_node_js
 gulp | https://github.com/gulpjs/gulp/blob/master/docs/API.md
 temp | https://github.com/bruce/node-temp/blob/master/README.md
 ffbinaries | https://www.npmjs.com/package/ffbinaries
+ffmpeg | https://ffmpeg.org/ffmpeg-all.html
+
 
 **Run tests with:**
 
