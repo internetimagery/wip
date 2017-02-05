@@ -1,6 +1,7 @@
 # Local stuff
 src/**/*.js
 test/*.js
+src/binaries
 
 # Created by https://www.gitignore.io/api/windows,linux,osx,node
 

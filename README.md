@@ -1,6 +1,12 @@
 # wip
 wip
 
+**Get binaries:**
+
+```bash
+npm run binaries
+```
+
 
 ## DEV
 
