@@ -16,6 +16,7 @@ expect.js | https://github.com/Automattic/expect.js/blob/master/README.md
 mocha | https://mochajs.org/
 pouchDB | https://pouchdb.com/adapters.html#pouchdb_in_node_js
 gulp | https://github.com/gulpjs/gulp/blob/master/docs/API.md
+temp | https://github.com/bruce/node-temp/blob/master/README.md
 
 
 **Run tests with:**

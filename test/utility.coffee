@@ -13,12 +13,9 @@ describe "format(<string>, <object>)", ->
   it "Should only capture closing brackets.", ->
     expect utility.format "one {{TAG} three", {tag: "two"}
     .to.be "one {two three"
-  it "Should skip backslashed brackets (escaped)", ->
-    expect utility.format "\{one} {TAG} three", {tag: "two"}
-    .to.be "{one} two three"
-  it "Should fail if given incorret parameters", ->
-    expect utility.format ["one"], "two"
-    .to.throw()
+  # it "Should skip backslashed brackets (escaped)", ->
+  #   expect utility.format "\{one} {TAG} three", {tag: "two"}
+  #   .to.be "{one} two three"
   it "Should fail if captured tags are not in <object>", ->
     expect utility.format "{GONE}", {}
     .to.throw()
@@ -29,3 +26,14 @@ describe "format(<string>, <object>)", ->
     .to.throw()
     expect utility.format "{underscore_ok}", {underscore_ok:"good"}
     .to.be "good"
+
+describe "compare_image_hash(<hash1>, <hash2>)", ->
+  it "Should see two of the same image as the same.", ->
+    expect compare_image_hash hash1, hash2
+    .to.be true
+  it "Should see two of the same image different sizes as the same.", ->
+    expect compare_image_hash hash1, hash2
+    .to.be true
+  it "Should see two different images as the different.", ->
+    expect compare_image_hash hash1, hash2
+    .to.be false
