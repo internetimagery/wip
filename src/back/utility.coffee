@@ -1,8 +1,13 @@
 # Some utility functionality
 
 # Format a string, taking {TAGNAME} and replacing with an object {tagname: "text"}
-format = /\{(.+?)\}/g
 module.exports.format = (src, replace)->
-  console.log format.exec src
-# REFER TO
-# https://stackoverflow.com/questions/30037699/javascript-regex-to-match-unless-preceded-by-backslash/30038104
+  # tags = src.match /\{\w+?\}/g
+  reg = /\{(\w+)\}/g
+  src2 = src
+  while tag = reg.exec src
+    text = replace[tag[1].toLowerCase()]
+    if text?
+      src2 = src2.replace tag[0], text
+    reg.lastIndex = tag.index + 1
+  return src2

@@ -3,6 +3,7 @@ expect = require 'expect.js'
 temp = require 'temp'
 ffmpeg = require '../src/back/ffmpeg'
 path = require 'path'
+fs = require 'fs'
 
 # Automatically delete temporary files
 temp.track()
@@ -28,9 +29,21 @@ describe "get_thumb(<src>, <dest>, <width>, <height>, <callback>)", ->
     img = path.join TEST_DATA, "img_a.jpg"
     thumb = path.join TEMP_DIR, "thumb1.jpg"
     ffmpeg.get_thumb img, thumb, 500, 500, (err)->
-      done err
+      done err if err
+      try
+        expect fs.existsSync thumb
+        .to.be true
+      catch err
+      finally
+        done err
   it "Should get a thumbnail from a video", (done)->
     vid = path.join TEST_DATA, "video.mp4"
     thumb = path.join TEMP_DIR, "thumb2.jpg"
     ffmpeg.get_thumb vid, thumb, 500, 500, (err)->
-      done err
+      done err if err
+      try
+        expect fs.existsSync thumb
+        .to.be true
+      catch err
+      finally
+        done err
