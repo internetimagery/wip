@@ -3,11 +3,11 @@
 path = require 'path'
 temp = require 'temp'
 expect = require 'expect.js'
-store = require "../src/back/storage"
+DB = require "../src/back/storage"
 
 # temp.track()
 tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
-STORE = new store.Metadata tempfile
+STORE = new DB tempfile
 
 describe "storage.put(<doc>, <callback>)", ->
   it "Should fail to add invalid data", (done)->

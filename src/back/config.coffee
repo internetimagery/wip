@@ -19,6 +19,11 @@ CONFIG_DEFAULTS =
   # 0 = perfect match. 10+ Noooo waaay
   duplicate_closeness: 0.3
 
+  # Thumbnail width and height limits
+  thumbs:
+    width: 250
+    height: 250
+
 
 # Load a config file if it exists.
 # Otherwise create a new one with our defaults

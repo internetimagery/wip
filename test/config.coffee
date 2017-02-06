@@ -21,7 +21,7 @@ describe "config.load(<file>, <callback>)", ->
       finally
         done err
   it "Should create a default file if none.", (done)->
-    file = temp.path {dir: __dirname + "/temp"}
+    file = temp.path {dir: path.join __dirname, "temp"}
     config.load file, (err, data)->
       return done err if err
       try
