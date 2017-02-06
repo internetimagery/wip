@@ -25,6 +25,8 @@ gulp | https://github.com/gulpjs/gulp/blob/master/docs/API.md
 temp | https://github.com/bruce/node-temp/blob/master/README.md
 ffbinaries | https://www.npmjs.com/package/ffbinaries
 ffmpeg | https://ffmpeg.org/ffmpeg-all.html
+jimp | https://www.npmjs.com/package/jimp
+underscore.string | https://epeli.github.io/underscore.string/#api
 
 
 **Run tests with:**
