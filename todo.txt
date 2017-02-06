@@ -5,6 +5,9 @@ GUI: https://facebook.github.io/react/
 Server: http://sailsjs.com/
 Application: http://electron.atom.io/
 
+in controller / database, track config file. upon load, compare with new one. If changes are made,
+see what needs to be done. ie: changing the folder structure would require moving/hardlinking all photos into the new structure
+
 file system: npm install fs-extra
 
 Do we want ffprobe?

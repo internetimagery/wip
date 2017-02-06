@@ -12,7 +12,7 @@ CONFIG_DEFAULTS =
 
   # Format to generate paths, to save photos / videos
   # Relative path names only
-  path_format: "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}{NUM}{TAGS}{EXT}"
+  path_format: "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}_{NUM}[{TAGS}]{EXT}"
 
   # How close do we consider a match to alert the user of a conflict
   # 0 = perfect match. 10+ Noooo waaay
