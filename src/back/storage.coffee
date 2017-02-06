@@ -25,11 +25,14 @@ class Metadata
       callback null, data
     return
 
-  # edit: (data, callback)->
-  #   @db.put data, (err, result)->
-  #     return callback err if err
-  #     data._rev = result.rev
-  #     callback null, data
+  # Put data in without any checks
+  put_force: (data, callback)->
+    data._id = id
+    @db.put data, (err, result)->
+      return callback err if err
+      data._rev = result.rev
+      callback null, data
+    return
 
   del: (data, callback)->
     @db.remove data, (err)->
@@ -45,5 +48,5 @@ class Metadata
       return callback err if err
       callback null, docs.rows
     return
-    
+
 module.exports.Metadata = Metadata
