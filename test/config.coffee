@@ -8,7 +8,7 @@ config = require "../src/back/config"
 
 TEMP = path.join __dirname, "temp"
 
-describe "load(<file>, <callback>)", ->
+describe "config.load(<file>, <callback>)", ->
   it "Should load an existing config file.", (done)->
     file = path.join(TEMP, "config.json")
     fs.writeFileSync file, JSON.stringify {data:"here"}
