@@ -12,6 +12,7 @@ CONFIG_DEFAULTS =
 
   # Format to generate paths, to save photos / videos
   # Relative path names only
+  # 2017/17/02/01 Birthday/10/02/01 Birthday_01[person].jpeg
   path_format: "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}_{NUM}[{TAGS}]{EXT}"
 
   # How close do we consider a match to alert the user of a conflict

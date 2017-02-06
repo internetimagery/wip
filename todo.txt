@@ -14,8 +14,6 @@ Do we want ffprobe?
 
 storage class...
 
-Have a config file that gets data read from. Have a default version that gets copied across if the config doesn't exist.
-Include the path format for it. ie: {YYYY}/{yy}-{mm}-{dd} {EVENT}/{yy}-{mm}-{dd} {EVENT}_{NUM}{TAGS}{EXT}
 
 
 
