@@ -6,10 +6,10 @@ expect = require 'expect.js'
 store = require "../src/back/storage"
 
 # temp.track()
+tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
+STORE = new store.Metadata tempfile
 
 describe "put(<doc>, <callback>)", ->
-  tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
-  STORE = new store.Metadata tempfile
   it "Should fail to add invalid data", (done)->
     STORE.put {one: "two"}, (err, data)->
       if err then done() else done new Error "Did not fail to insert data."
@@ -47,6 +47,10 @@ describe "put(<doc>, <callback>)", ->
       return done err if err
       STORE.del data, (err)->
         done err
+describe "put_force(<doc>, <callback>)", ->
+  it "Should add any kind of data.", (done)->
+    STORE.put_force {id: "one", two:"three"}, (err, data)->
+      done err
 
 # storage class
 # add

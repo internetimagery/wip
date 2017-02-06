@@ -27,8 +27,7 @@ class Metadata
 
   # Put data in without any checks
   put_force: (data, callback)->
-    data._id = id
-    @db.put data, (err, result)->
+    @db.post data, (err, result)->
       return callback err if err
       data._rev = result.rev
       callback null, data
