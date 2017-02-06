@@ -38,6 +38,15 @@ describe "put(<doc>, <callback>)", ->
         catch err
         finally
           done err
+  it "Should delete data.", (done)->
+    valid =
+      path: "/here/somewhere"
+      hash: "abc"
+      thumb: "/here/there/elsewhere"
+    STORE.put valid, (err, data)->
+      return done err if err
+      STORE.del valid.path, (err)->
+        done err
 
 # storage class
 # add
