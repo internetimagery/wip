@@ -2,7 +2,7 @@
 src/**/*.js
 test/*.js
 src/binaries
-test/test_data
+test/temp
 
 # Created by https://www.gitignore.io/api/windows,linux,osx,node
 

@@ -10,7 +10,7 @@ fs = require 'fs'
 # temp.track()
 
 TEST_DATA = path.join __dirname, "test_data"
-TEMP_DIR = temp.mkdirSync {dir: TEST_DATA}
+TEMP_DIR = temp.mkdirSync {dir: __dirname + "/temp"}
 
 
 describe "get_metadata(<file>, <callback>)", ->

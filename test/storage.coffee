@@ -8,7 +8,7 @@ store = require "../src/back/storage"
 # temp.track()
 
 describe "put(<doc>, <callback>)", ->
-  tempfile = temp.mkdirSync {dir: path.join __dirname, "test_data"}
+  tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
   STORE = new store.Metadata tempfile
   it "Should fail to add invalid data", (done)->
     STORE.put {one: "two"}, (err, data)->
