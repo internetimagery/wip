@@ -3,7 +3,7 @@ expect = require 'expect.js'
 utility = require "../src/back/utility"
 
 
-describe "format(<string>, <object>)", ->
+describe "utility.format(<string>, <object>)", ->
   it "Should capture and replace {TAGNAME} brackets.", ->
     expect utility.format "one/{TAG}/three", {tag: "two"}
     .to.be "one/two/three"
@@ -30,7 +30,7 @@ describe "format(<string>, <object>)", ->
     expect utility.format "{underscore_ok}", {underscore_ok:"good"}
     .to.be "good"
 
-# describe "compare_image_hash(<hash1>, <hash2>)", ->
+# describe "utility.compare_image_hash(<hash1>, <hash2>)", ->
 #   it "Should see two of the same image as the same.", ->
 #     expect compare_image_hash hash1, hash2
 #     .to.be true
