@@ -45,7 +45,7 @@ describe "put(<doc>, <callback>)", ->
       thumb: "/here/there/elsewhere"
     STORE.put valid, (err, data)->
       return done err if err
-      STORE.del valid.path, (err)->
+      STORE.del data, (err)->
         done err
 
 # storage class
