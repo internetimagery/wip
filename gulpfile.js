@@ -1,5 +1,7 @@
 (function() {
-  var coffee, ffbinaries, gulp, mocha, path;
+  var coffee, ffbinaries, fs, gulp, mocha, path;
+
+  fs = require('fs-extra');
 
   gulp = require('gulp');
 
@@ -12,7 +14,12 @@
   path = require('path');
 
   gulp.task("test", function() {
-    return gulp.src("test/*.coffee").pipe(coffee()).pipe(gulp.dest("test")).pipe(mocha());
+    return fs.emptyDir(path.resolve("test/temp"), function(err) {
+      if (err) {
+        return console.error(err);
+      }
+      return gulp.src("test/*.coffee").pipe(coffee()).pipe(gulp.dest("test")).pipe(mocha());
+    });
   });
 
   gulp.task("binaries", function() {
