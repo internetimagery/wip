@@ -14,11 +14,12 @@ class Repo
   constructor: ->
     @config_name = "config.json" # Name of file to find.
     db = null # Saving our data
+
   init: (base_path, callback)->
     # Load our config file. This file will tell us everything
     # about the repo from here.
     # If someone has changed the repo directory, we must rebuild it.
-    # If no repo exists, build it anyway.
+    # If no repo exists, build it.
     fs.ensureDir base_path, (err)=>
       return callback err if err
       config.load path.join(base_path, @config_name), (err, @config)=>
@@ -30,7 +31,7 @@ class Repo
           # Initiate our Database
           @db = new Storage path.join(base_path, @config.repo, "metadata")
           # attempt to load our previous config information
-          @db.get "config", (err, data)->
+          @db.get "config", (err, data)=>
             return callback err if err and err.name != "not_found"
             # Rebuild / Repair repo if config data changed
             @rebuild @config, data or {}, (err)->
@@ -38,12 +39,22 @@ class Repo
 
   rebuild: (new_config, old_config, callback)->
     # Rebuild repo if config data has changed
-    for k, v of new_config
-      if v != old_config[k] # Check if values have changed
-        switch k
-          when "db" then console.log "db changed"
-          when "thumbs" then console.log "thumbs changed"
-    callback null
+    # Get all values that changed [KEY, NEW_VAL, OLD_VAL]
+    changes = ([k, v, old_config[k]] for k, v of new_config when old_config[k] != v)
+    wait = changes.length
+    done - (err)->
+      return callback err if err
+      wait -= 1
+      if not wait
+        callback null
+
+    # TODO: make changes in new temporary repo then if success, move across
+
+    # Loop through our changes and make adjustments
+    for change in changes
+      switch change[0]
+        when value then something
+        else done null
 
 
 p = "D:/Documents/GitHub/wip/test/temp"
