@@ -10,7 +10,7 @@ DOCUMENT_FORMAT = {
 }
 
 # Add and remove date from the storage database
-class DB
+class Storage
   constructor: (db_path)->
     @db = new PouchDB db_path, {auto_compaction: true} # Turn off auto_compation if slow
 
@@ -50,4 +50,4 @@ class DB
       callback null, docs.rows
     return
 
-module.exports = DB
+module.exports = Storage
