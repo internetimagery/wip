@@ -28,8 +28,10 @@ deconstruct_path = (format, path)->
   metadata = {}
   tags = (t for t in scan_tags format)
   new_reg = reg_escape format
-            .replace /\\\{\w+\\\}/g, "(.+)"
-  for val, i in new RegExp(new_reg).exec(path)[1 ..]
+            .replace /\\\{\w+\\\}/g, "(.*)"
+  vals = new RegExp(new_reg).exec(path)
+  throw new Error "Path does not match format: #{format} :: #{path}" if not vals?
+  for val, i in vals[1 ..]
     if not val.startsWith("{") and not val.endsWith("}")
       metadata[tags[i].tag] = val
   return metadata
