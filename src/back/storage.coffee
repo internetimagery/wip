@@ -7,6 +7,10 @@ DOCUMENT_FORMAT = {
   thumb: (x)-> x? # Path to thumbnail
   hash: (x)-> x? # Image hash
   path: (x)-> x? # Path to image
+  # metadata:
+    # date:
+    # event:
+    # tags:
 }
 
 # Add and remove date from the storage database

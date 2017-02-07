@@ -18,6 +18,9 @@ date_tag = {
 months = ["january","february","march","april","may","june","july","august","september","october","november","december"]
 
 # Rebuild time tags if some are missing
+# TODO: Make this more accurate. Maybe try getting exif data.
+# TODO: Needs different levels of desperation.
+# TODO: Alternatively... if we keep the date in our database we could use that
 build_time = (metadata)->
   date = new Date()
   for k, v of metadata
@@ -40,17 +43,13 @@ build_time = (metadata)->
 # Move paths to a new location
 # From A to B
 migrate_paths = (cwdA, formatA, cwdB, formatB, paths, callback)->
+  # Rename paths to the new format
   for p in paths
     metadata = build_time utility.deconstruct_path formatA, p
     new_p = utility.build_path formatB, metadata
-    # Rebuild time stuff
 
     console.log p
     console.log new_p
-
-
-
-
 
 
 
