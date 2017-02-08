@@ -6,7 +6,7 @@
     "photos": "photos"
   },
   "photos": {
-    "format": "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}_{NUM}[{TAGS}]{EXT}"
+    "format": "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}_{ID}[{TAGS}]"
   },
   "thumbs": {
     "format": "",

@@ -7,25 +7,26 @@ path = require 'path'
 jimp = require 'jimp'
 temp = require 'temp'
 
+# Find our ffmpeg executable
 ff_path = path.resolve __dirname, "../binaries/ffmpeg"
 
 # Grab metadata from a file
-module.exports.metadata = (file, callback)->
+metadata = (file, callback)->
   command = ["-v", "error", "-i", file, "-f", "ffmetadata", "pipe:1"]
   child_process.execFile ff_path, command, (err, stdout)->
     return callback err if err
     return callback null, ini.parse stdout
 
 # Get thumbnail
-module.exports.thumb = (src, dest, width, height, callback)->
+thumb = (src, dest, width, height, callback)->
   command = ["-i", src, "-vframes", 1, "-an", "-vf", "scale='#{width}:-1',crop='h=min(#{height}\\,ih)'", dest]
   child_process.execFile ff_path, command, (err)->
-    callback err
+    callback err, dest
 
 # Hash an image file, using jimp to assist. pHash
-module.exports.hash = (img, callback)->
+hash = (img, callback)->
   tmp_output = temp.path {
-                dir: path.dirname img
+                # dir: path.dirname img
                 suffix: ".bmp"
               }
   cleanup = (err, hash)->
@@ -38,6 +39,13 @@ module.exports.hash = (img, callback)->
       return cleanup err if err
       cleanup null, data.hash()
 
+module.exports = {
+  metadata: metadata
+  thumb: thumb
+  hash: hash
+}
+
+# Using ffmpeg to speed up jimp hashes
 # Jimp alone: 1550
 # ffmpeg shrink to bmp first: 156
 

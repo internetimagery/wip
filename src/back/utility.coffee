@@ -9,7 +9,7 @@
 date_tag = {
     yyyy: (x)-> x.getFullYear()
     mmmm: (x)-> months[x.getMonth()]
-    yy: (x)-> x.getFullYear()[2..]
+    yy: (x)-> x.getFullYear().toString()[2..]
     mm: (x)-> x.getMonth() + 1
     dd: (x)-> x.getDate()
 }
@@ -24,7 +24,6 @@ extract_date = (date)->
   for k, v of date_tag
     tags[k] = v(date)
   return tags
-
 
 # Scan for tags {TAGS} within a path <string>
 scan_tags = (src)->
@@ -43,7 +42,7 @@ scan_tags = (src)->
 build_path = (format, metadata={})->
   path = format
   for tag in scan_tags format
-    path = path.replace tag.raw, metadata[tag.tag] if metadata[tag.tag]?
+    path = path.replace tag.raw, if metadata[tag.tag]? then metadata[tag.tag] else ""
   return path
 
 # Pull metadata back out of a formated path
@@ -59,9 +58,19 @@ deconstruct_path = (format, path)->
       metadata[tags[i].tag] = val
   return metadata
 
+# Get a simple unique id.
+global.unique_id ?= 0
+unique_id = ->
+  id = Date.now()
+  while (id += 1) <= global.unique_id
+    continue
+  global.unique_id = id
+
+
 module.exports = {
   extract_date: extract_date
   build_path: build_path
   deconstruct_path: deconstruct_path
   reg_escape: reg_escape
+  unique_id: unique_id
 }
