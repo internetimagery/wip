@@ -9,47 +9,30 @@ DB = require "../src/back/storage"
 tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
 STORE = new DB tempfile
 
+doc =
+  id: "test"
+  path: "/here/there"
+  hash: "abc"
+  thumb: "/here/there/thumb"
+
 describe "storage.put(<doc>, <callback>)", ->
-  it "Should fail to add invalid data", (done)->
-    STORE.put {one: "two"}, (err, data)->
-      if err then done() else done new Error "Did not fail to insert data."
-  it "Should succeed in adding valid data", (done)->
-    valid =
-      path: "/here/there"
-      hash: "abc"
-      thumb: "/here/there/thumb"
-    STORE.put valid, (err, data)->
-      if err then done err else done()
+  it "Should succeed in adding a document", (done)->
+    STORE.put doc, (err, data)->
+      return done err if err
+      doc = data
+      done()
+describe "storage.get(<doc>, <callback>)", ->
   it "Should retrieve data.", (done)->
-    valid =
-      path: "/here/where"
-      hash: "abc"
-      thumb: "/here/there/elsewhere"
-    STORE.put valid, (err, data)->
-      return done err if err
-      STORE.get valid.path, (err, doc)->
-        try
-          expect doc.path
-          .to.be valid.path
-          expect doc.hash
-          .to.be valid.hash
-          expect doc.thumb
-          .to.be valid.thumb
-        catch err
-        finally
-          done err
-  it "Should delete data.", (done)->
-    valid =
-      path: "/here/somewhere"
-      hash: "abc"
-      thumb: "/here/there/elsewhere"
-    STORE.put valid, (err, data)->
-      return done err if err
-      STORE.del data, (err)->
+    STORE.get doc.id, (err, data)->
+      try
+        expect data.path
+        .to.be doc.path
+      catch err
+      finally
         done err
-describe "storage.put_force(<doc>, <callback>)", ->
-  it "Should add any kind of data.", (done)->
-    STORE.put_force {id: "one", two:"three"}, (err, data)->
+describe "storage.del(<doc>, <callback>)", ->
+  it "Should delete data.", (done)->
+    STORE.del doc, (err)->
       done err
 
 # storage class

@@ -1,51 +1,28 @@
-# Store metadata
+# A thin wrapper around PouchDB
 
 PouchDB = require 'pouchdb'
 
-# Validate our document format!
-DOCUMENT_FORMAT = {
-  thumb: (x)-> x? # Path to thumbnail
-  hash: (x)-> x? # Image hash
-  path: (x)-> x? # Path to image
-  # metadata:
-    # date:
-    # event:
-    # tags:
-}
-
-# Add and remove date from the storage database
 class Storage
   constructor: (db_path)->
     @db = new PouchDB db_path, {auto_compaction: true} # Turn off auto_compation if slow
 
-  # Validation and ID given on initial add.
-  put: (data, callback)->
-    for k, v of DOCUMENT_FORMAT
-      return callback new Error "Invalid data: #{data}" if not v(data[k])
-    data._id = data.path
-    @db.put data, (err, result)->
+  put: (doc, callback)->
+    doc._id = doc.id
+    @db.post doc, (err, result)->
       return callback err if err
-      data._rev = result.rev
-      callback null, data
+      doc._id = result.id
+      doc._rev = result.rev
+      callback null, doc
     return
 
-  # Put data in without any checks
-  put_force: (data, callback)->
-    data._id = data.id
-    @db.post data, (err, result)->
-      return callback err if err
-      data._id = result.id
-      data._rev = result.rev
-      callback null, data
-    return
-
-  del: (data, callback)->
-    @db.remove data, (err)->
+  del: (doc, callback)->
+    @db.remove doc, (err)->
       callback err
     return
 
   get: (id, callback)->
-    @db.get id, callback
+    @db.get id, (err, doc)->
+      callback err, doc
     return
 
   get_all: (callback)->
