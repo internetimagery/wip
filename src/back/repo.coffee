@@ -33,7 +33,7 @@ class Repo
   # Build a valid photo entry for our database
   get_doc: (photo, date=new Date(), event="Unsorted", tags=[])->
     doc =
-      id: utility.unique_id()
+      id: utility.unique_id().toString()
       src: photo
       date: date.toUTCString()
       event: event
@@ -43,30 +43,34 @@ class Repo
   # Add photos to the repo
   # Accepts one or more docs!
   add: (docs, callback)->
+    new_docs = []
     docs = [docs] if not Array.isArray docs
     photos_dir = path.join @root, @config.dir.photos
-    for doc in docs
-      do (doc)=>
-        # Build a path name.
-        metadata ={}
-        metadata[k] = v for k, v of doc
-        metadata[k] = v for k, v of utility.extract_date new Date(doc.date)
-        doc.path = utility.build_path @config.photos.format, metadata
-        doc.path += path.extname doc.src
-        path_abs = path.join photos_dir, doc.path
+    async.each docs, (doc, done)=>
+      # Build a path name.
+      metadata ={}
+      metadata[k] = v for k, v of doc
+      metadata[k] = v for k, v of utility.extract_date new Date(doc.date)
+      doc.path = utility.build_path @config.photos.format, metadata
+      doc.path += path.extname doc.src
+      path_abs = path.join photos_dir, doc.path
 
-        # Get a hash of the file
-        # Create a thumbnail
-        # Copy the file into its new location
-        async.parallel [
-          async.apply ffmpeg.hash, doc.src
-          async.apply ffmpeg.thumb, doc.src, temp.path({suffix:".jpg"}), @config.thumbs.width, @config.thumbs.height
-          async.apply fs.copy, doc.src, path_abs
-        ], (err, results)->
-          return callback err if err
-          console.log fs.readFile results[1]
+      # Get a hash of the file
+      # Create a thumbnail
+      # Copy the file into its new location
+      async.parallel [
+        async.apply ffmpeg.hash, doc.src
+        async.apply ffmpeg.thumb, doc.src, temp.path({suffix:".jpeg"}), @config.thumbs.width, @config.thumbs.height
+        async.apply fs.copy, doc.src, path_abs
+      ], (err, results)=>
+        return done err if err
+        doc.hash = results[0]
+        @db.add_thumb doc, results[1], (err, doc)->
           fs.unlinkSync(results[1])
-          console.log results
+          done err, new_docs.push doc
+    , (err, docs)->
+      callback err, new_docs
+
 
 
 
@@ -77,6 +81,8 @@ m = new Repo()
 m.init p, (err)->
   return console.error err if err
   doc = m.get_doc i, new Date(), "birthday", ["person", "people"]
-  m.add [doc], (err, doc)->
+  m.add [doc], (err, docs)->
     return console.error err if err
-    console.log "doc", doc
+    m.db.get_thumb docs[0], (err, thumb)->
+      fs.writeFile path.join(p, "test2.jpeg"), thumb, (err)->
+        console.error err if err
