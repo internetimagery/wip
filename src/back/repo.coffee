@@ -60,15 +60,18 @@ class Repo
       # Copy the file into its new location
       async.parallel [
         async.apply ffmpeg.hash, doc.src
-        async.apply ffmpeg.thumb, doc.src, temp.path({suffix:".jpeg"}), @config.thumbs.width, @config.thumbs.height
+        async.apply ffmpeg.thumb, doc.src, @config.thumbs.width, @config.thumbs.height
         async.apply fs.copy, doc.src, path_abs
       ], (err, results)=>
         return done err if err
+
+        # Add our Hash and Thumbnail attachment to our document
+        # Put the document into the database finally.
         doc.hash = results[0]
-        @db.add_thumb doc, results[1], (err, doc)->
-          fs.unlinkSync(results[1])
+        doc = @db.add_attachment doc, @config.thumbs.name, @config.thumbs.type, results[1]
+        @db.put doc, (err, doc)->
           done err, new_docs.push doc
-    , (err, docs)->
+    , (err)->
       callback err, new_docs
 
 
@@ -83,6 +86,7 @@ m.init p, (err)->
   doc = m.get_doc i, new Date(), "birthday", ["person", "people"]
   m.add [doc], (err, docs)->
     return console.error err if err
-    m.db.get_thumb docs[0], (err, thumb)->
+    m.db.get_thumb docs[0], "thumb.jpeg", (err, thumb)->
+      return console.error err if err
       fs.writeFile path.join(p, "test2.jpeg"), thumb, (err)->
         console.error err if err

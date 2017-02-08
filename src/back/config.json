@@ -8,6 +8,8 @@
     "format": "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}_{ID}[{TAGS}]"
   },
   "thumbs": {
+    "name": "thumb.jpeg",
+    "type": "image/jpeg",
     "width": 250,
     "height": 250
   }

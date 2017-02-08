@@ -18,10 +18,10 @@ metadata = (file, callback)->
     return callback null, ini.parse stdout
 
 # Get thumbnail
-thumb = (src, dest, width, height, callback)->
-  command = ["-i", src, "-vframes", 1, "-an", "-vf", "scale='#{width}:-1',crop='h=min(#{height}\\,ih)'", dest]
-  child_process.execFile ff_path, command, (err)->
-    callback err, dest
+thumb = (src, width, height, callback)->
+  command = ["-v", "error", "-i", src, "-vframes", 1, "-an", "-vf", "scale='#{width}:-1',crop='h=min(#{height}\\,ih)'", "-f", "image2", "pipe:1"]
+  child_process.execFile ff_path, command, {encoding: "buffer"}, (err, buffer)->
+    callback err, buffer
 
 # Hash an image file, using jimp to assist. pHash
 hash = (img, callback)->
