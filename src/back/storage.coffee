@@ -8,7 +8,7 @@ class Storage
   constructor: (db_path)->
     @thumb = "thumb.jpeg"
     @db = new PouchDB db_path,
-      auto_compaction: true # Turn off auto_compation if slow
+      # auto_compaction: true # Turn off auto_compation if slow
 
   put: (doc, callback)->
     doc._id = doc.id
