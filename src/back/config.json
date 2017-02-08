@@ -1,0 +1,16 @@
+{
+  "id": "config",
+  "dir": {
+    "db": ".wip/db",
+    "thumbs": ".wip/thumbs",
+    "photos": "photos"
+  },
+  "photos": {
+    "format": "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}_{NUM}[{TAGS}]{EXT}"
+  },
+  "thumbs": {
+    "format": "",
+    "width": 250,
+    "height": 250
+  }
+}

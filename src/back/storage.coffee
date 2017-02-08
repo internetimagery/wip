@@ -4,7 +4,8 @@ PouchDB = require 'pouchdb'
 
 class Storage
   constructor: (db_path)->
-    @db = new PouchDB db_path, {auto_compaction: true} # Turn off auto_compation if slow
+    @db = new PouchDB db_path,
+      auto_compaction: true # Turn off auto_compation if slow
 
   put: (doc, callback)->
     doc._id = doc.id

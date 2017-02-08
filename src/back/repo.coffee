@@ -1,63 +1,43 @@
-# Repository containing photos, metadata etc etc
-
+# Repository collecting photos, metadata etc etc
 
 fs = require 'fs-extra'
 path = require 'path'
-Storage = require "./storage"
-config = require "./config"
+storage = require "./storage"
+utility = require "./utility"
 
-# Files saved in the format
-# /metadata = database containing metadata
-# /thumbs = folder containing thumbnails
+# Load up some default data for the repo!
+config = require "./config.json"
 
 class Repo
-  constructor: ->
-    @config_name = "config.json" # Name of file to find.
-    db = null # Saving our data
+  # Give the repo a name
+  constructor: (@name)->
 
-  init: (base_path, callback)->
-    # Load our config file. This file will tell us everything
-    # about the repo from here.
-    # If someone has changed the repo directory, we must rebuild it.
-    # If no repo exists, build it.
-    fs.ensureDir base_path, (err)=>
-      return callback err if err
-      config.load path.join(base_path, @config_name), (err, @config)=>
-        return callback err if err
-        # Initiate our thumnail directory
-        @thumb_dir = path.join base_path, @config.repo, "thumbs"
-        fs.ensureDir @thumb_dir, (err)=>
+  # Initiate the database.
+  # Grab the repo config file. If it exists, otherwise use defaults.
+  init: (@root, callback)->
+    @db = new storage path.join @root, config.dir.db
+    @db.get config.id, (err, doc)=>
+      return callback err if err and err.name != "not_found"
+      if err # We have not yet added a config file to the DB
+        @db.put config, (err, doc)=>
           return callback err if err
-          # Initiate our Database
-          @db = new Storage path.join(base_path, @config.repo, "metadata")
-          # attempt to load our previous config information
-          @db.get "config", (err, data)=>
-            return callback err if err and err.name != "not_found"
-            # Rebuild / Repair repo if config data changed
-            @rebuild @config, data or {}, (err)->
-              callback err
-
-  rebuild: (new_config, old_config, callback)->
-    # Rebuild repo if config data has changed
-    # Get all values that changed [KEY, NEW_VAL, OLD_VAL]
-    changes = ([k, v, old_config[k]] for k, v of new_config when old_config[k] != v)
-    wait = changes.length
-    done - (err)->
-      return callback err if err
-      wait -= 1
-      if not wait
+          @config = doc
+          callback null
+      else
+        @config = doc
         callback null
 
-    # TODO: make changes in new temporary repo then if success, move across
-
-    # Loop through our changes and make adjustments
-    for change in changes
-      switch change[0]
-        when value then something
-        else done null
+  # Add a photo to the repo
+  add: (photo, date, metadata, callback)->
+    metadata[k] = v for k, v of utility.extract_date date
+    console.log utility.build_path @config.photos.format, metadata
 
 
 p = "D:/Documents/GitHub/wip/test/temp"
+i = "D:/Documents/GitHub/wip/test/test_data/img_a.jpg"
 m = new Repo()
 m.init p, (err)->
-  console.error err if err
+  return console.error err if err
+  m.add i, new Date(), {event: "birthday", tags:"person people"}, (err, id)->
+    return console.error err if err
+    console.log "id", id

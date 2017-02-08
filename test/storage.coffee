@@ -5,7 +5,6 @@ temp = require 'temp'
 expect = require 'expect.js'
 DB = require "../src/back/storage"
 
-# temp.track()
 tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
 STORE = new DB tempfile
 
@@ -34,8 +33,3 @@ describe "storage.del(<doc>, <callback>)", ->
   it "Should delete data.", (done)->
     STORE.del doc, (err)->
       done err
-
-# storage class
-# add
-# edit
-# del

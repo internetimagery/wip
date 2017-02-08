@@ -1,7 +1,30 @@
 # Some utility functionality
 
+# Built in metadata:
+# YYYY = Year, 2017
+# MMMM = Month, "February"
+# YY = Year, 17
+# MM = Month, 02
+# DD = Day, 01
+date_tag = {
+    yyyy: (x)-> x.getFullYear()
+    mmmm: (x)-> months[x.getMonth()]
+    yy: (x)-> x.getFullYear()[2..]
+    mm: (x)-> x.getMonth() + 1
+    dd: (x)-> x.getDate()
+}
+months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+
 # Escape regex string [https://stackoverflow.com/questions/2593637/how-to-escape-regular-expression-in-javascript#2593661]
 reg_escape = (str)-> (str + "").replace /[.?*+^$[\]\\(){}|-]/g, "\\$&"
+
+# Extract tags from a date object
+extract_date = (date)->
+  tags = {}
+  for k, v of date_tag
+    tags[k] = v(date)
+  return tags
+
 
 # Scan for tags {TAGS} within a path <string>
 scan_tags = (src)->
@@ -37,6 +60,7 @@ deconstruct_path = (format, path)->
   return metadata
 
 module.exports = {
+  extract_date: extract_date
   build_path: build_path
   deconstruct_path: deconstruct_path
   reg_escape: reg_escape
