@@ -64,6 +64,7 @@ class Repo
           async.apply fs.copy, doc.src, path_abs
         ], (err, results)->
           return callback err if err
+          console.log fs.readFile results[1]
           fs.unlinkSync(results[1])
           console.log results
 
