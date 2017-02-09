@@ -72,11 +72,11 @@ class Repo
         @db.put doc, (err, doc)=>
           return done err if err
           @db.add_attachment doc, @config.thumbs.name, @config.thumbs.type, results[1], (err, doc)->
-            console.log doc
             done err, new_docs.push doc
     , (err)->
       callback err, new_docs
 
+module.exports = Repo
 
 #
 #
