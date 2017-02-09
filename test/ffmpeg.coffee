@@ -25,26 +25,24 @@ describe "ffmpeg.metadata(<file>, <callback>)", ->
       finally
         done err
 
-describe "ffmpeg.thumb(<src>, <dest>, <width>, <height>, <callback>)", ->
-  it "Should get a thumbnail from an image", (done)->
+describe "ffmpeg.thumb(<src>, <width>, <height>, <callback>)", ->
+  it "Should get thumbnail data from an image", (done)->
     img = path.join TEST_DATA, "img_a.jpg"
-    thumb = path.join TEMP_DIR, "thumb1.jpg"
-    ffmpeg.thumb img, thumb, 500, 500, (err)->
+    ffmpeg.thumb img, 500, 500, (err, buffer)->
       done err if err
       try
-        expect fs.existsSync thumb
-        .to.be true
+        expect buffer
+        .not.to.be.empty()
       catch err
       finally
         done err
   it "Should get a thumbnail from a video", (done)->
     vid = path.join TEST_DATA, "video.mp4"
-    thumb = path.join TEMP_DIR, "thumb2.jpg"
-    ffmpeg.thumb vid, thumb, 500, 500, (err)->
+    ffmpeg.thumb vid, 500, 500, (err, buffer)->
       done err if err
       try
-        expect fs.existsSync thumb
-        .to.be true
+        expect buffer
+        .not.to.be.empty()
       catch err
       finally
         done err

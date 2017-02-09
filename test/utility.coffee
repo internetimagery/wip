@@ -23,9 +23,9 @@ describe "utility.build_path(<string>, <object>)", ->
   # it "Should skip backslashed brackets (escaped)", ->
   #   expect utility.build_path "\{one} {TAG} three", {tag: "two"}
   #   .to.be "{one} two three"
-  it "Should ignore if captured tags are not in <object>", ->
+  it "Should remove if captured tags are not in <object>", ->
     expect utility.build_path "{GONE}", {}
-    .to.be "{GONE}"
+    .to.be ""
   it "Should fail if tag names are not valid.", ->
     expect utility.build_path "{no spaces}", {no:"not",spaces:"here"}
     .to.be "{no spaces}"

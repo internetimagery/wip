@@ -1,5 +1,5 @@
 {
-  "id": "config",
+  "_id": "config",
   "dir": {
     "db": ".data",
     "photos": "photos"

@@ -19,7 +19,7 @@ class Repo
   # Grab the repo config file. If it exists, otherwise use defaults.
   init: (@root, callback)->
     @db = new storage path.join @root, config.dir.db
-    @db.get config.id, (err, doc)=>
+    @db.get config._id, (err, doc)=>
       return callback err if err and err.name != "not_found"
       if err # We have not yet added a config file to the DB
         @db.put config, (err, doc)=>
@@ -33,7 +33,7 @@ class Repo
   # Build a valid photo entry for our database
   get_doc: (photo, date=new Date(), event="Unsorted", tags=[])->
     doc =
-      id: utility.unique_id().toString()
+      _id: utility.unique_id().toString()
       src: photo
       date: date.toUTCString()
       event: event
@@ -78,18 +78,17 @@ class Repo
       callback err, new_docs
 
 
-
-
-
-p = "D:/Documents/GitHub/wip/test/temp"
-i = "D:/Documents/GitHub/wip/test/test_data/img_a.jpg"
-m = new Repo()
-m.init p, (err)->
-  return console.error err if err
-  doc = m.get_doc i, new Date(), "birthday", ["person", "people"]
-  m.add [doc], (err, docs)->
-    return console.error err if err
-    m.db.get_thumb docs[0], "thumb.jpeg", (err, thumb)->
-      return console.error err if err
-      fs.writeFile path.join(p, "test2.jpeg"), thumb, (err)->
-        console.error err if err
+#
+#
+# p = "D:/Documents/GitHub/wip/test/temp"
+# i = "D:/Documents/GitHub/wip/test/test_data/img_a.jpg"
+# m = new Repo()
+# m.init p, (err)->
+#   return console.error err if err
+#   doc = m.get_doc i, new Date(), "birthday", ["person", "people"]
+#   m.add [doc], (err, docs)->
+#     return console.error err if err
+#     m.db.get_thumb docs[0], "thumb.jpeg", (err, thumb)->
+#       return console.error err if err
+#       fs.writeFile path.join(p, "test2.jpeg"), thumb, (err)->
+#         console.error err if err
