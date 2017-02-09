@@ -59,12 +59,22 @@ deconstruct_path = (format, path)->
   return metadata
 
 # Get a simple unique id.
-global.unique_id ?= 0
+global.old_id ?= 0
 unique_id = ->
   id = Date.now()
-  while (id += 1) <= global.unique_id
+  while (id += 1) <= global.old_id
     continue
-  global.unique_id = id
+  global.old_id = id
+
+# # Copy an object fully
+# deep_copy = (objA, objB, override=false)->
+#   objC = {}
+#   for k, v of objB
+#     objC[k] = switch v.constructor
+#       when Object then deep_copy objA[k], v, override
+#       when Array then Array.from new Set v.concat objA[k]
+#       else v
+#   return objC
 
 
 module.exports = {

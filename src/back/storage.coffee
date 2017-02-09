@@ -1,7 +1,6 @@
 # A thin wrapper around PouchDB
 
 PouchDB = require 'pouchdb'
-path = require 'path'
 
 class Storage
   constructor: (db_path)->
@@ -9,7 +8,7 @@ class Storage
       # auto_compaction: true # Turn off auto_compation if slow
 
   put: (doc, callback)->
-    doc._id = doc.id
+    doc._id ?= doc.id
     @db.post doc, (err, result)->
       return callback err if err
       doc._id = result.id
@@ -29,12 +28,11 @@ class Storage
       return callback err if err
       callback null, docs.rows
 
-  add_attachment: (doc, name, type, buffer)->
-    doc._attachments ?= {}
-    doc._attachments[name] =
-      content_type: type
-      data: buffer
-    return doc
+  add_attachment: (doc, name, type, buffer, callback)->
+    doc._id ?= doc.id
+    @db.putAttachment doc._id, name, doc._rev, buffer, type, (err, result)=>
+      return callback err if err
+      @get doc._id, callback
 
   get_thumb: (doc, name, callback)->
     @db.getAttachment doc.id, name, (err, buffer)->

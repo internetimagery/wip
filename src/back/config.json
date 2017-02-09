@@ -1,7 +1,7 @@
 {
   "id": "config",
   "dir": {
-    "db": ".wip/db",
+    "db": ".data",
     "photos": "photos"
   },
   "photos": {
@@ -12,5 +12,6 @@
     "type": "image/jpeg",
     "width": 250,
     "height": 250
-  }
+  },
+  "max_processes": 5
 }

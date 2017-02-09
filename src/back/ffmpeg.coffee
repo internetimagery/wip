@@ -5,7 +5,6 @@ fs = require 'fs'
 ini = require 'ini'
 path = require 'path'
 jimp = require 'jimp'
-temp = require 'temp'
 
 # Find our ffmpeg executable
 ff_path = path.resolve __dirname, "../binaries/ffmpeg"
@@ -13,9 +12,9 @@ ff_path = path.resolve __dirname, "../binaries/ffmpeg"
 # Grab metadata from a file
 metadata = (file, callback)->
   command = ["-v", "error", "-i", file, "-f", "ffmetadata", "pipe:1"]
-  child_process.execFile ff_path, command, (err, stdout)->
+  child_process.execFile ff_path, command, (err, meta)->
     return callback err if err
-    return callback null, ini.parse stdout
+    return callback null, ini.parse meta
 
 # Get thumbnail
 thumb = (src, width, height, callback)->
@@ -25,19 +24,12 @@ thumb = (src, width, height, callback)->
 
 # Hash an image file, using jimp to assist. pHash
 hash = (img, callback)->
-  tmp_output = temp.path {
-                # dir: path.dirname img
-                suffix: ".bmp"
-              }
-  cleanup = (err, hash)->
-    fs.unlinkSync tmp_output
-    callback err, hash
-  command = ["-v", "error", "-i", img, "-vf", "scale=32:32,hue=0:0", tmp_output]
-  child_process.execFile ff_path, command, (err)->
-    return cleanup err if err
-    jimp.read tmp_output, (err, data)->
-      return cleanup err if err
-      cleanup null, data.hash()
+  command = ["-v", "error", "-i", img, "-vf", "scale=32:32,hue=0:0", "-f", "image2", "pipe:1"]
+  child_process.execFile ff_path, command, {encoding: "buffer"}, (err, buffer)->
+    return callback err if err
+    jimp.read buffer, (err, data)->
+      return callback err if err
+      callback null, data.hash()
 
 module.exports = {
   metadata: metadata

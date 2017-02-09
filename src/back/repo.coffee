@@ -37,7 +37,7 @@ class Repo
       src: photo
       date: date.toUTCString()
       event: event
-      tags: tags.join " "
+      tags: tags
     return doc
 
   # Add photos to the repo
@@ -46,11 +46,12 @@ class Repo
     new_docs = []
     docs = [docs] if not Array.isArray docs
     photos_dir = path.join @root, @config.dir.photos
-    async.each docs, (doc, done)=>
+    async.eachLimit docs, @config.max_processes, (doc, done)=>
       # Build a path name.
       metadata ={}
       metadata[k] = v for k, v of doc
       metadata[k] = v for k, v of utility.extract_date new Date(doc.date)
+      metadata.tags = metadata.tags.join " "
       doc.path = utility.build_path @config.photos.format, metadata
       doc.path += path.extname doc.src
       path_abs = path.join photos_dir, doc.path
@@ -68,9 +69,11 @@ class Repo
         # Add our Hash and Thumbnail attachment to our document
         # Put the document into the database finally.
         doc.hash = results[0]
-        doc = @db.add_attachment doc, @config.thumbs.name, @config.thumbs.type, results[1]
-        @db.put doc, (err, doc)->
-          done err, new_docs.push doc
+        @db.put doc, (err, doc)=>
+          return done err if err
+          @db.add_attachment doc, @config.thumbs.name, @config.thumbs.type, results[1], (err, doc)->
+            console.log doc
+            done err, new_docs.push doc
     , (err)->
       callback err, new_docs
 
