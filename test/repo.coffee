@@ -11,14 +11,11 @@ REPO = new Repo("testing")
 
 describe "repo.init(<path>, <callback>)", ->
   it "Should create a repository.", (done)->
-    REPO.init TEMP, (err)->
-      return done err if err
-      try
-        expect fs.existsSync TEMP
-        .to.be.ok()
-      catch err
-      finally
-        done err
+    REPO.init TEMP
+    .then ->
+      expect fs.existsSync TEMP
+      .to.be.ok()
+    .catch done
 
 describe "repo.get_doc(<image>, <date>, <event>, <tags>)", ->
   it "Should provide a document we can insert into the database", ->
@@ -29,13 +26,10 @@ describe "repo.add(<docs>, <callback>)", ->
   it "Should add a document to the repo, attaining metadata etc", (done)->
     img = path.join __dirname, "test_data", "img_a.jpg"
     doc = REPO.get_doc img, new Date(), "testing", ["test", "image"]
-    REPO.add [doc], (err, docs)->
-      return done err if err
-      try
-        expect docs
-        .to.have.length 1
-        expect docs[0]
-        .to.have.property "hash"
-      catch err
-      finally
-        done err
+    REPO.add [doc]
+    .then (docs)->
+      expect docs
+      .to.have.length 1
+      expect docs[0]
+      .to.have.property "hash"
+    .catch done

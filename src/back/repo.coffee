@@ -18,17 +18,16 @@ class Repo
 
   # Initiate the database.
   # Grab the repo config file. If it exists, otherwise use defaults.
-  init: (@root, cb)->
+  init: (@root)->
     @db = new storage path.join @root, config.dir.db
-    @db.get config._id, (err, doc)=>
-      return cb err if err and err.name != "not_found"
-      if err # We have not yet added a config file to the DB
-        @db.put config, e cb, (doc)=>
-          @config = doc
-          cb null
-      else
+    @db.get config._id
+    .then (doc)=>
+      @config = doc
+    .catch (err)=>
+      throw err if err.name != "not_found"
+      @db.put config
+      .then (doc)=>
         @config = doc
-        cb null
 
   # Build a valid photo entry for our database
   get_doc: (photo, date=new Date(), event="Unsorted", tags=[])->
@@ -42,7 +41,7 @@ class Repo
 
   # Add photos to the repo
   # Accepts one or more docs!
-  add: (docs, cb)->
+  add: (docs)->
     new_docs = []
     docs = [docs] if not Array.isArray docs
     photos_dir = path.join @root, @config.dir.photos

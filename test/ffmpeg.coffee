@@ -16,59 +16,49 @@ TEMP_DIR = temp.mkdirSync {dir: __dirname + "/temp"}
 describe "ffmpeg.metadata(<file>, <callback>)", ->
   VIDEO = path.join TEST_DATA, "video.mp4"
   it "Should retrieve an object of key/value pairs for metadata", (done)->
-    ffmpeg.metadata VIDEO, (err, data)->
-      return done err if err
-      try
-        expect data
-        .to.be.an "object"
-      catch err
-      finally
-        done err
+    ffmpeg.metadata VIDEO
+    .then (data)->
+      expect data
+      .to.be.an "object"
+      done()
+    .catch done
 
 describe "ffmpeg.thumb(<src>, <width>, <height>, <callback>)", ->
   it "Should get thumbnail data from an image", (done)->
     img = path.join TEST_DATA, "img_a.jpg"
-    ffmpeg.thumb img, 500, 500, (err, buffer)->
-      done err if err
-      try
-        expect buffer
-        .not.to.be.empty()
-      catch err
-      finally
-        done err
+    ffmpeg.thumb img, 500, 500
+    .then (buffer)->
+      expect buffer
+      .not.to.be.empty()
+    .catch done
+
   it "Should get a thumbnail from a video", (done)->
     vid = path.join TEST_DATA, "video.mp4"
-    ffmpeg.thumb vid, 500, 500, (err, buffer)->
-      done err if err
-      try
-        expect buffer
-        .not.to.be.empty()
-      catch err
-      finally
-        done err
+    ffmpeg.thumb vid, 500, 500
+    .then (buffer)->
+      expect buffer
+      .not.to.be.empty()
+    .catch done
 
 describe "ffmpeg.hash(<image>, <callback>)", ->
   imga = path.join TEST_DATA, "img_a.jpg"
   imgb = path.join TEST_DATA, "img_b.jpg"
   it "Should match two of the same image", (done)->
-    ffmpeg.hash imga, (err, hasha)->
-      return done err if err
-      ffmpeg.hash imga, (err, hashb)->
-        return done err if err
-        try
-          expect str.levenshtein hasha, hashb
-          .to.be.within 0, 0.01
-        catch err
-        finally
-          done err
+    ffmpeg.hash imga
+    .then (hasha)->
+      ffmpeg.hash imga
+      .then (hashb)->
+        expect str.levenshtein hasha, hashb
+        .to.be.within 0, 0.01
+      .catch done
+    .catch done
+
   it "Should fail to match two of the same image.", (done)->
-    ffmpeg.hash imga, (err, hasha)->
-      return done err if err
-      ffmpeg.hash imgb, (err, hashb)->
-        return done err if err
-        try
-          expect str.levenshtein hasha, hashb
-          .to.be.above 5
-        catch err
-        finally
-          done err
+    ffmpeg.hash imga
+    .then (hasha)->
+      ffmpeg.hash imgb
+      .then (hashb)->
+        expect str.levenshtein hasha, hashb
+        .to.be.above 5
+      .catch done
+    .catch done
