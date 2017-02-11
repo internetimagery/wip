@@ -10,6 +10,7 @@ utility = require "./utility"
 ffmpeg = require "./ffmpeg"
 config = require "./config.json"
 
+e = (cb1, cb2)-> return (err, args...)-> if err then cb1 err else cb2 args...
 
 class Repo
   # Give the repo a name
@@ -17,18 +18,17 @@ class Repo
 
   # Initiate the database.
   # Grab the repo config file. If it exists, otherwise use defaults.
-  init: (@root, callback)->
+  init: (@root, cb)->
     @db = new storage path.join @root, config.dir.db
     @db.get config._id, (err, doc)=>
-      return callback err if err and err.name != "not_found"
+      return cb err if err and err.name != "not_found"
       if err # We have not yet added a config file to the DB
-        @db.put config, (err, doc)=>
-          return callback err if err
+        @db.put config, e cb, (doc)=>
           @config = doc
-          callback null
+          cb null
       else
         @config = doc
-        callback null
+        cb null
 
   # Build a valid photo entry for our database
   get_doc: (photo, date=new Date(), event="Unsorted", tags=[])->
@@ -42,7 +42,7 @@ class Repo
 
   # Add photos to the repo
   # Accepts one or more docs!
-  add: (docs, callback)->
+  add: (docs, cb)->
     new_docs = []
     docs = [docs] if not Array.isArray docs
     photos_dir = path.join @root, @config.dir.photos
@@ -63,18 +63,15 @@ class Repo
         async.apply ffmpeg.hash, doc.src
         async.apply ffmpeg.thumb, doc.src, @config.thumbs.width, @config.thumbs.height
         async.apply fs.copy, doc.src, path_abs
-      ], (err, results)=>
-        return done err if err
-
+      ], e done, (results)=>
         # Add our Hash and Thumbnail attachment to our document
         # Put the document into the database finally.
         doc.hash = results[0]
-        @db.put doc, (err, doc)=>
-          return done err if err
+        @db.put doc, e done, (doc)=>
           @db.add_attachment doc, @config.thumbs.name, @config.thumbs.type, results[1], (err, doc)->
             done err, new_docs.push doc
     , (err)->
-      callback err, new_docs
+      cb err, new_docs
 
 module.exports = Repo
 

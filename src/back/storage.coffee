@@ -2,43 +2,42 @@
 
 PouchDB = require 'pouchdb'
 
+e = (cb1, cb2)-> return (err, args...)-> if err then cb1 err else cb2 args...
+
 class Storage
   constructor: (db_path)->
     @db = new PouchDB db_path,
       # auto_compaction: true # Turn off auto_compation if slow
 
-  put: (doc, callback)->
-    @db.post doc, (err, result)->
-      return callback err if err
+  put: (doc, cb)->
+    @db.post doc, e cb, (result)->
       doc._rev = result.rev
-      callback null, doc
+      cb null, doc
     return
 
-  del: (doc, callback)->
+  del: (doc, cb)->
     @db.remove doc, (err)->
-      callback err
+      cb err
     return
 
-  get: (id, callback)->
+  get: (id, cb)->
     @db.get id, (err, doc)->
-      callback err, doc
+      cb err, doc
     return
 
-  get_all: (callback)->
-    @db.allDocs (err, docs)->
-      return callback err if err
-      callback null, docs.rows
+  get_all: (cb)->
+    @db.allDocs e cb, (docs)->
+      cb null, docs.rows
     return
 
-  add_attachment: (doc, name, type, buffer, callback)->
-    @db.putAttachment doc._id, name, doc._rev, buffer, type, (err, result)=>
-      return callback err if err
-      @get doc._id, callback
+  add_attachment: (doc, name, type, buffer, cb)->
+    @db.putAttachment doc._id, name, doc._rev, buffer, type, e cb, (result)=>
+      @get doc._id, cb
     return
 
-  get_attachment: (doc, name, callback)->
+  get_attachment: (doc, name, cb)->
     @db.getAttachment doc._id, name, (err, buffer)->
-      callback err, buffer
+      cb err, buffer
     return
 
 
