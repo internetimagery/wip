@@ -4,13 +4,15 @@ fs = require 'fs-extra'
 path = require 'path'
 async = require 'async'
 temp = require 'temp'
+Promise = require 'promise'
 string = require 'underscore.string'
 storage = require "./storage"
 utility = require "./utility"
 ffmpeg = require "./ffmpeg"
 config = require "./config.json"
 
-e = (cb1, cb2)-> return (err, args...)-> if err then cb1 err else cb2 args...
+eachLimit = Promise.denodeify async.eachLimit
+copy = Promise.denodeify fs.copy
 
 class Repo
   # Give the repo a name
@@ -21,20 +23,18 @@ class Repo
   init: (@root)->
     @db = new storage path.join @root, config.dir.db
     @db.get config._id
-    .then (doc)=>
-      @config = doc
     .catch (err)=>
       throw err if err.name != "not_found"
       @db.put config
-      .then (doc)=>
-        @config = doc
+    .then (doc)=>
+      @config = doc
 
   # Build a valid photo entry for our database
   get_doc: (photo, date=new Date(), event="Unsorted", tags=[])->
     doc =
       _id: utility.unique_id().toString()
       src: photo
-      date: date.toUTCString()
+      date: date.toISOString()
       event: event
       tags: tags
     return doc
@@ -45,7 +45,7 @@ class Repo
     new_docs = []
     docs = [docs] if not Array.isArray docs
     photos_dir = path.join @root, @config.dir.photos
-    async.eachLimit docs, @config.max_processes, (doc, done)=>
+    eachLimit docs, @config.max_processes, (doc, done)=>
       # Build a path name.
       metadata ={}
       metadata[k] = v for k, v of doc
@@ -58,19 +58,24 @@ class Repo
       # Get a hash of the file
       # Create a thumbnail
       # Copy the file into its new location
-      async.parallel [
-        async.apply ffmpeg.hash, doc.src
-        async.apply ffmpeg.thumb, doc.src, @config.thumbs.width, @config.thumbs.height
-        async.apply fs.copy, doc.src, path_abs
-      ], e done, (results)=>
+      Promise.all [
+        ffmpeg.hash doc.src
+        ffmpeg.thumb doc.src, @config.thumbs.width, @config.thumbs.height
+        copy doc.src, path_abs
+        ]
+      .then (results)=>
         # Add our Hash and Thumbnail attachment to our document
         # Put the document into the database finally.
         doc.hash = results[0]
-        @db.put doc, e done, (doc)=>
-          @db.add_attachment doc, @config.thumbs.name, @config.thumbs.type, results[1], (err, doc)->
-            done err, new_docs.push doc
-    , (err)->
-      cb err, new_docs
+        @db.put doc
+        .then (doc)=>
+          @db.put_attachment doc, @config.thumbs.name, @config.thumbs.type, results[1]
+        .then (doc)->
+          new_docs.push doc
+          done()
+      .catch done
+    .then ->
+      new_docs
 
 module.exports = Repo
 

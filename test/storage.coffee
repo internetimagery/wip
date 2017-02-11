@@ -4,61 +4,61 @@ fs = require 'fs'
 path = require 'path'
 temp = require 'temp'
 expect = require 'expect.js'
+Promise = require 'promise'
 DB = require "../src/back/storage"
 
 tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
 test_img = path.join __dirname, "test_data", "img_a.jpg"
 STORE = new DB tempfile
 
+readFile = Promise.denodeify fs.readFile
+
 describe "storage.put(<doc>, <callback>)", ->
-  it "Should succeed in adding a document", (done)->
+  it "Should succeed in adding a document", ->
     STORE.put {_id: "image", path: "/here/there"}
     .then (doc)->
       expect doc
       .to.have.property "_rev"
-    .catch done
 
 describe "storage.get(<doc>, <callback>)", ->
-  it "Should retrieve data.", (done)->
+  it "Should retrieve data.", ->
     STORE.get "image"
     .then (doc)->
       expect doc
       .to.have.property "path"
-    .catch done
 
-describe "storage.add_attachment(<doc>, <name>, <type>, <data>, <callback>)", ->
-  it "Should save data to a doc", (done)->
-    fs.readFile test_img
-    .then (buffer)->
+describe "storage.put_attachment(<doc>, <name>, <type>, <data>, <callback>)", ->
+  it "Should save data to a doc", ->
+    Promise.all [
+      readFile test_img
       STORE.get "image"
-    .then (doc)->
-      STORE.add_attachment doc, "img_a.jpg", "image/jpeg", buffer
+      ]
+    .then (results)->
+      STORE.put_attachment results[1], "img_a.jpg", "image/jpeg", results[0]
     .then (doc)->
       expect doc
       .to.have.property "_attachments"
-    .catch done
 
 describe "storage.get_attachment(<doc>, <name>, <callback>)", ->
-  it "Should retrive data from attachment", (done)->
+  it "Should retrive data from attachment", ->
     STORE.get_attachment {_id: "image"}, "img_a.jpg"
     .then (buffer)->
       expect buffer.length
       .to.be.above 0
-    .catch done
 
-  it "Should fail to retrieve if attachment doesn't exist", (done)->
+  it "Should fail to retrieve if attachment doesn't exist", ->
     STORE.get_attachment {_id: "image"}, "img_b.jpg"
-    .then -> done new Error "Missing attachment did not throw an error."
-    .catch -> done()
+    .then -> throw new Error "Missing attachment did not throw an error."
+    .catch ->
 
 describe "storage.del(<doc>, <callback>)", ->
-  it "Should delete data.", (done)->
+  it "Should delete data.", ->
     STORE.get "image"
     .then (doc)->
       STORE.del doc
-    .catch done
+    .catch (err)-> throw err
     .then ->
       STORE.get "image"
     .then (doc)->
-      done new Error "File still exists in database."
-    .catch (err)-> done()
+      throw new Error "File still exists in database."
+    .catch ->
