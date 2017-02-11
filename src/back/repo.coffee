@@ -2,7 +2,6 @@
 
 fs = require 'fs-extra'
 path = require 'path'
-async = require 'async'
 temp = require 'temp'
 Promise = require 'promise'
 string = require 'underscore.string'
@@ -10,8 +9,7 @@ storage = require "./storage"
 utility = require "./utility"
 ffmpeg = require "./ffmpeg"
 config = require "./config.json"
-
-eachLimit = Promise.denodeify async.eachLimit
+eachLimit = Promise.denodeify require "async/eachLimit"
 copy = Promise.denodeify fs.copy
 
 class Repo
