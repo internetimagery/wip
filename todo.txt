@@ -53,6 +53,8 @@ detect if cameras are plugged in. perhaps looking for dcim?
 
 face detection for tagging. OpenCV? Something more javascripty? replace canvas calls with jimp for ccv.js face detect
 
+optional image compression using mozjpeg or something similar? jimp can compress? anything else?
+
 make a database that logs dhash (or some other hash), file path, date added, date taken, event name, thumbnail path, anything else?
 Use dhash to check for existing duplicates.
 perhaps a more efficient way of checking for duplications?

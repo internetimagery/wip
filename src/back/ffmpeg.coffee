@@ -2,7 +2,6 @@
 
 child_process = require 'child_process'
 Promise = require 'promise'
-fs = require 'fs'
 ini = require 'ini'
 path = require 'path'
 jimp = require 'jimp'
