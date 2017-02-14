@@ -2,7 +2,8 @@
   "_id": "config",
   "dir": {
     "db": ".data",
-    "photos": "photos"
+    "photos": "photos",
+    "stash": "importing"
   },
   "photos": {
     "format": "{YYYY}/{YY}-{MM}-{DD} {EVENT}/{YY}-{MM}-{DD} {EVENT}_{ID}[{TAGS}]"

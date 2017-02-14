@@ -12,6 +12,15 @@ config = require "./config.json"
 eachLimit = Promise.denodeify require "async/eachLimit"
 copy = Promise.denodeify fs.copy
 
+# reimagined:
+#   add = files, added to stash
+#   stash = list files in stash
+#   update = make changes to the files doc, stick
+#   commit = add files from stash into repo
+#   delete = delete a doc, and the file at "path"
+#   read = get all info from a doc. pass in a boolean to also get thumnail perhaps
+
+
 class Repo
   # Give the repo a name
   constructor: (@name)->

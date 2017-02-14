@@ -5,12 +5,23 @@ GUI: https://facebook.github.io/react/
 Server: http://sailsjs.com/
 Application: http://electron.atom.io/
 
+BAD ===
 in controller / database, track config file. upon load, compare with new one. If changes are made,
 see what needs to be done. ie: changing the folder structure would require moving/hardlinking all photos into the new structure
+== Second thought this is a bad idea. Better to have dedicated functions that change the settings and do the legwork than to manually change
+the settings, have to check for changes and then fire off a function anyway if certain critera are met. K.I.S.S
 
 file system: npm install fs-extra
 
 Do we want ffprobe?
+
+do we want different dates to be in the same event? maybe have an event date, and a photo date, but keep it separate?
+perhaps events need to have their own entry in the db?
+could be dynamically built out of views. though date would have to manually be added?
+perhaps dynamically edited to show contents of event?
+are we getting too reliant on db at this point though?
+
+need uuid, or xkcd-password or something to make unique names for stash
 
 storage class...
 
