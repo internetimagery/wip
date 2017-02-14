@@ -14,15 +14,37 @@ Do we want ffprobe?
 
 storage class...
 
+storage doc:
+{
+_id : ID
+src : Original location
+path : repo location
+date : date taken
+event : event taken
+tags : people in photo, other tags?
+_rev : revision
+_attachments : [] thumbnail
+state : position in repo. 2 = staged, 1 = stored, 0 = missing
+hash : perceptual hash of image for duplicate testing
+}
 
+make repo git-like. ie:
+repo.add (files) can add docs, create thumbnails, and hashes, but not add files to the repo directly. Just keeping the source linked. OR can copy files to a location in which we can sort them.
+repo.commit ("message?") store all the added "stashed" files into the repo using the path format.
+repo.get("stash") get all details of images in stash.
 
+need views that cover:
+hashes for duplication testing
+state for grabbing files only in stash, or missing files
+path for finding _id based on file path in repo
 
 detect if cameras are plugged in. perhaps looking for dcim?
 
-face detection for tagging. OpenCV? Something more javascripty?
+face detection for tagging. OpenCV? Something more javascripty? replace canvas calls with jimp for ccv.js face detect
 
 make a database that logs dhash (or some other hash), file path, date added, date taken, event name, thumbnail path, anything else?
 Use dhash to check for existing duplicates.
+perhaps a more efficient way of checking for duplications?
 
 Copy files to a staging area to organize and tag them, then insert into file structure as two step process.
 
