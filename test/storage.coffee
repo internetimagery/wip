@@ -62,3 +62,28 @@ describe "storage.del(<doc>, <callback>)", ->
     .then (doc)->
       throw new Error "File still exists in database."
     .catch ->
+
+describe "storage.compile(<name>, <function>)", ->
+  it "Should save the query with the name", ->
+    STORE.compile "data", (doc)-> emit doc.data if doc.data?
+
+describe "storage.query(<name/function>)", ->
+  it "Should accept functions", ->
+    STORE.put {_id: "test", data:"information", thing:"stuff"}
+    .then ->
+      STORE.put {_id: "test2", data:"more"}
+    .then ->
+      STORE.query (doc)-> emit doc.thing if doc.thing?
+    .then (docs)->
+      expect docs.length
+      .to.be 1
+      expect docs[0].key
+      .to.be "stuff"
+
+  it "Should run the compiled query by name", ->
+    STORE.query "data"
+    .then (docs)->
+      expect docs.length
+      .to.be 2
+      expect docs[0].key
+      .to.be "information"
