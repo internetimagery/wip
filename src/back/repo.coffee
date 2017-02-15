@@ -66,7 +66,22 @@ class Repo
 
   list: (view)->
     # List precompiled view
-    # TODO: learn design docs
+    new Promise (ok, fail)->
+      @db.query view
+      .then (docs)->
+        ok docs
+      .catch (err)=>
+        return fail err if err.name != "not_found"
+        func = switch view
+          when "hash" then (doc)-> emit doc.hash if doc.hash?
+          else throw new Error "view not compiled \"#{view}\"."
+        @db.compile view, func
+        .then =>
+          @db.query view
+        .then (docs)->
+          console.log docs
+          docs
+
 
   update: (doc)->
     # Edit docs for files

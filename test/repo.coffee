@@ -27,7 +27,10 @@ describe "repo.add(<images>)", ->
       .to.have.property "hash"
 
 describe "repo.list(<view>)", ->
-  it "Should list files based on view"
+  it "Should list files based on view", ->
+    REPO.list "hash"
+    .then (docs)->
+      console.log docs
 
 describe "repo.update(<doc>)", ->
   it "Should update data in db"

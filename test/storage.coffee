@@ -1,6 +1,6 @@
 # Storage
 
-fs = require 'fs'
+fs = require '../src/back/fs'
 path = require 'path'
 temp = require 'temp'
 expect = require 'expect.js'
@@ -11,7 +11,6 @@ tempfile = temp.mkdirSync {dir: path.join __dirname, "temp"}
 test_img = path.join __dirname, "test_data", "img_a.jpg"
 STORE = new DB tempfile
 
-readFile = Promise.denodeify fs.readFile
 
 describe "storage.put(<doc>, <callback>)", ->
   it "Should succeed in adding a document", ->
@@ -30,7 +29,7 @@ describe "storage.get(<doc>, <callback>)", ->
 describe "storage.put_attachment(<doc>, <name>, <type>, <data>, <callback>)", ->
   it "Should save data to a doc", ->
     Promise.all [
-      readFile test_img
+      fs.readFile test_img
       STORE.get "image"
       ]
     .then (results)->
@@ -63,27 +62,15 @@ describe "storage.del(<doc>, <callback>)", ->
       throw new Error "File still exists in database."
     .catch ->
 
-describe "storage.compile(<name>, <function>)", ->
-  it "Should save the query with the name", ->
-    STORE.compile "data", (doc)-> emit doc.data if doc.data?
-
-describe "storage.query(<name/function>)", ->
-  it "Should accept functions", ->
+describe "storage.query(<name>, <function>)", ->
+  it "Should run queries", ->
     STORE.put {_id: "test", data:"information", thing:"stuff"}
     .then ->
       STORE.put {_id: "test2", data:"more"}
     .then ->
-      STORE.query (doc)-> emit doc.thing if doc.thing?
+      STORE.query "thing", (doc)-> emit doc.thing if doc.thing?
     .then (docs)->
       expect docs.length
       .to.be 1
       expect docs[0].key
       .to.be "stuff"
-
-  it "Should run the compiled query by name", ->
-    STORE.query "data"
-    .then (docs)->
-      expect docs.length
-      .to.be 2
-      expect docs[0].key
-      .to.be "information"
